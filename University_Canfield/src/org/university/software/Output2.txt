@@ -1,0 +1,66 @@
+Testing Pay increases  ....
+Staff Employee: Carol earns $3280.00 this pay period
+After 10% Raise ....
+Staff Employee: Carol earns $3608.00 this pay period
+
+Professor: Regan earns $4615.38 this pay period
+After 8% Raise ....
+Professor: Regan earns $4984.62 this pay period
+
+Testing collisionDetection method in Person class ...
+ECE107 course cannot be added to Tharp's Schedule. ECE107 conflicts with ECE320. Conflicting time slot is Mon 9:30am to 10:45am.
+Is there a conflict between Circuits Analysis and Experimental Course ? : true
+
+Lahiru's credit remaining for graduation ...
+Student Lahiru needs 57 units to graduate
+
+The roster for course CS387:
+Lahiru 
+Ben 
+Jerry 
+
+The roster for course CS372:
+Lahiru 
+Daz 
+Ben 
+
+The list of students in the university:
+Lahiru
+Daz
+Ben
+Jerry
+
+The list of professors in the university:
+Regan
+RosenBlit
+Tharp
+Kececioglu
+Homer
+
+The list of staff in the university:
+Carol
+
+The list of courses in the university:
+ECE275 Computer Programming II
+ECE320 Circuits Analysis
+ECE373 Object Oriented Software Design
+ECE107 Experimental Course
+CS387 Enterprise Web Applications
+CS372 Comparative Programming Languages
+CS345 Discrete Structures
+CS426 Computer Networks
+
+The student list for department CS:
+Ben
+Jerry
+
+The professor list for department ECE:
+Regan
+RosenBlit
+Tharp
+
+The course list for department ECE:
+ECE275 Computer Programming II
+ECE320 Circuits Analysis
+ECE373 Object Oriented Software Design
+ECE107 Experimental Course
