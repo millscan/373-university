@@ -3,31 +3,23 @@ package org.university.people;
 import java.util.ArrayList;
 
 import org.university.hardware.Department;
-import org.university.software.Course;
+import org.university.software.*;
 
-public class Student {
+public class Student extends Person {
 	
 	String[] Week = {"Mon", "Tue", "Wed", "Thu", "Fri"};
 	String[] Slot = {"8:00am to 9:15am", "9:30am to 10:45am", "11:00am to 12:15pm", "12:30pm to 1:45pm", "2:00pm to 3:15pm", "3:30pm to 4:45pm"};
 
 	public Student() {
-		this.courses = new ArrayList<Course>();
+		this.schedule = new ArrayList<Course>();
 	}
-	
-	private String name;
+
 	private Department department;
-	private ArrayList<Course> courses;
 	private int unitsCompleted;
 	private int unitsRequired;
-	
-	public void setName(String n) {
-		this.name = n;
-	}
-	
-	public String getName() {
-		return this.name;
-	}
-	
+	private int unitsEnrolled;
+	private float tuitionFee;
+
 	public void setDepartment(Department d) {
 		this.department = d;
 		if(!d.getStudentList().contains(this)){
@@ -39,19 +31,22 @@ public class Student {
 		return this.department;
 	}
 	
-	public boolean addCourse(Course c) {
-		if(detectConflict(c)) {
-			return false;
+	public void addCampusCourse(CampusCourse c) {
+		if(detectConflict(c) || c.availableTo(this) ) {
+			return;
 		}
-		this.courses.add(c);
+		
+		this.schedule.add(c);
+		this.campusCourseList.add(c);
 		if(!c.getStudentRoster().contains(this)) {
-			c.addStudent(this);
+			c.addStudentToRoster(this);
 		}
-		return true;
 	}
 	
-	public boolean dropCourse(Course c) {
-		this.courses.remove(c);
+	
+	public boolean dropCampusCourse(CampusCourse c) {
+		this.schedule.remove(c);
+		this.campusCourseList.remove(c);
 		if(c.getStudentRoster().contains(this)) {
 			c.removeStudent(this);
 			return true;
@@ -64,8 +59,42 @@ public class Student {
 		}
 	}
 	
+	public void addOnlineCourse(OnlineCourse oCourse) {
+		if(oCourse.availableTo(this)) {
+			return;
+		}
+		
+		this.onlineCourseList.add(oCourse);
+		if(!oCourse.getStudentRoster().contains(this)) {
+			oCourse.addStudentToRoster(this);
+		}
+	}
+	
+	public boolean dropOnlineCourse(OnlineCourse oCourse) {
+		this.onlineCourseList.remove(oCourse);
+		if(oCourse.getStudentRoster().contains(this)) {
+			oCourse.removeStudent(this);
+			return true;
+		}
+		else {
+			System.out.printf("The course %s%s could not be dropped because %s is not enrolled in %s%s.%n",
+					oCourse.getDepartment().getDepartmentName(), oCourse.getCourseNumber(),
+					this.name, oCourse.getDepartment().getDepartmentName(), oCourse.getCourseNumber());
+			return false;
+		}
+	}
+
+	
 	public ArrayList<Course> getCourses(){
-		return courses;
+		return schedule;
+	}
+	
+	public ArrayList<CampusCourse> getCampusCourses(){
+		return campusCourseList;
+	}
+	
+	public ArrayList<OnlineCourse> getOnlineCourses(){
+		return onlineCourseList;
 	}
 	
 	public void setCompletedUnits(int newUnits) {
@@ -84,45 +113,29 @@ public class Student {
 		return unitsRequired;
 	}
 	
+	public int getCampusUnitsEnrolled() {
+		int temp = 0;
+		for(CampusCourse cc : this.campusCourseList) {
+			temp += cc.getCreditUnits();
+		}
+		return temp;
+	}
+	
+	public float getTuitionFee() {
+		int campusFee = 0;
+		int onlineFee = 0;
+		for(CampusCourse c : this.campusCourseList) {
+			campusFee += c.getCreditUnits() * 300;
+		}
+		for(OnlineCourse o : this.onlineCourseList) {
+			onlineFee += o.getCreditUnits() == 3 ? 2000 : 3000;
+		}
+		
+		return campusFee + onlineFee;
+	}
+	
 	public int requiredToGraduate() {
 		return unitsRequired - unitsCompleted;
 	}
-	
-	public boolean detectConflict(Course newCourse) {
-		boolean flag = false;
-		for(Course course : courses) {
-			for(int newSlot : newCourse.getSchedule()) {
-				if(course.getSchedule().contains(newSlot)) {
-					System.out.printf("%s%s course cannot be added to %s's schedule. %s%s conflicts with %s%s. Conflicting time slot is %s %s%n",
-							newCourse.getDepartment().getDepartmentName(), newCourse.getCourseNumber(),
-							this.name, newCourse.getDepartment().getDepartmentName(), newCourse.getCourseNumber(),
-							course.getDepartment().getDepartmentName(), course.getCourseNumber(),
-							Week[newSlot/100 - 1], Slot[newSlot%100 - 1]
-							);
-					flag = true;
-				}
-			}
-		}
-		return flag;
-	}
-	
-	public void printSchedule() {
-		int dayIndex;
-		int slotIndex;
-		for(int i = 0; i < 5; i++) {
-			for(int j = 0; j < 6; j++) {
-				for(Course course : courses) {
-					for(int slot : course.getSchedule()) {
-						dayIndex = slot / 100 - 1;
-						slotIndex = slot % 100 - 1;
-						if(dayIndex == i && slotIndex == j) {
-							System.out.printf("%s %s %s%s %s %n", Week[dayIndex],
-									Slot[slotIndex], course.getDepartment().getDepartmentName(),
-									course.getCourseNumber(), course.getName());
-						}
-					}
-				}
-			}
-		}
-	}
+
 }

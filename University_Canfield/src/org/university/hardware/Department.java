@@ -3,19 +3,23 @@ package org.university.hardware;
 import java.util.ArrayList;
 
 import org.university.people.*;
-import org.university.software.Course;
+import org.university.software.*;
 
 
 public class Department {
 
 	private String name;
-	private ArrayList<Course> courses;
+	private ArrayList<CampusCourse> campusCourses;
+	private ArrayList<OnlineCourse> onlineCourses;
 	private ArrayList<Professor> professors;
+	private ArrayList<Staff> staffList;
 	private ArrayList<Student> students;
 	
 	public Department() {
-		this.courses = new ArrayList<Course>();
+		this.campusCourses = new ArrayList<CampusCourse>();
+		this.onlineCourses = new ArrayList<OnlineCourse>();
 		this.professors = new ArrayList<Professor>();
+		this.staffList = new ArrayList<Staff>();
 		this.students = new ArrayList<Student>();
 	}
 
@@ -60,28 +64,59 @@ public class Department {
 		return professors.remove(p);
 	}
 	
+	public void addStaff(Staff s) {
+		staffList.add(s);
+	}
+	
+	public void removeStaff(Staff s) {
+		staffList.remove(s);
+	}
+	
+	public ArrayList<Staff> getStaffList() {
+		return staffList;
+	}
+	
 	public ArrayList<Professor> getProfessorList(){
 		return professors;
 	}
 	
-	public void addCourse(Course c) {
-		courses.add(c);
+	public void addCampusCourse(CampusCourse c) {
+		campusCourses.add(c);
 		if(c.getDepartment() != this) {
 			c.setDepartment(this);
 		}
 	}
 	
-	public void removeCourse(Course c) {
-		courses.remove(c);
+	public ArrayList<CampusCourse> getCampusCourseList(){
+		return campusCourses;
+	}
+	
+	
+	public void addOnlineCourse(OnlineCourse c) {
+		onlineCourses.add(c);
+		if(c.getDepartment() != this) {
+			c.setDepartment(this);
+		}
+	}
+	
+	public void removeCampusCourse(CampusCourse c) {
+		campusCourses.remove(c);
 		if(c.getDepartment() == this) {
 			c.setDepartment(null);
 		}
 	}
 	
-	public ArrayList<Course> getCourseList(){
-		return courses;
+	public ArrayList<OnlineCourse> getOnlineCourseList(){
+		return onlineCourses;
 	}
 	
+	public void removeOnlineCourse(OnlineCourse c) {
+		onlineCourses.remove(c);
+		if(c.getDepartment() == this) {
+			c.setDepartment(null);
+		}
+	}
+
 	public void printStudentList() {
 		for(Student s: students) {
 			System.out.println(s.getName());
@@ -94,9 +129,6 @@ public class Department {
 		}
 	}
 	
-	public void printCourseList() {
-		for(Course c: courses) {
-			System.out.println(this.getDepartmentName() + c.getCourseNumber());
-		}
-	}
+	
+	
 }
