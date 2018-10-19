@@ -14,11 +14,11 @@ public abstract class Course {
 	private int number;
 	private Department department;
 	private Professor professor;
-	protected ArrayList<Student> roster;
+	protected ArrayList<Person> roster;
 	private int credits;
 	
 	public Course() {
-		this.roster = new ArrayList<Student>();
+		this.roster = new ArrayList<Person>();
 	}
 	
 	public void setName(String n) {
@@ -63,7 +63,7 @@ public abstract class Course {
 		this.roster.remove(s);
 	}
 	
-	public ArrayList<Student> getStudentRoster(){
+	public ArrayList<Person> getStudentRoster(){
 		return roster;
 	}
 	

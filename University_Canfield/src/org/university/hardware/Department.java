@@ -87,6 +87,15 @@ public class Department {
 		}
 	}
 	
+	
+	public void removeCampusCourse(CampusCourse c) {
+		campusCourses.remove(c);
+		if(c.getDepartment() == this) {
+			c.setDepartment(null);
+		}
+	}
+	
+	
 	public ArrayList<CampusCourse> getCampusCourseList(){
 		return campusCourses;
 	}
@@ -98,14 +107,7 @@ public class Department {
 			c.setDepartment(this);
 		}
 	}
-	
-	public void removeCampusCourse(CampusCourse c) {
-		campusCourses.remove(c);
-		if(c.getDepartment() == this) {
-			c.setDepartment(null);
-		}
-	}
-	
+
 	public ArrayList<OnlineCourse> getOnlineCourseList(){
 		return onlineCourses;
 	}
@@ -129,6 +131,19 @@ public class Department {
 		}
 	}
 	
+	public void printStaffList() {
+		for(Staff s: staffList) {
+			System.out.println(s.getName());
+		}
+	}
 	
+	public void printCourseList() {
+		for(CampusCourse c : campusCourses) {
+			System.out.printf("%s%s %s%n", c.getDepartment().getDepartmentName(), c.getCourseNumber(), c.getName());
+		}
+		for(OnlineCourse c : onlineCourses) {
+			System.out.printf("%s%s %s%n", c.getDepartment().getDepartmentName(), c.getCourseNumber(), c.getName());
+		}
+	}
 	
 }

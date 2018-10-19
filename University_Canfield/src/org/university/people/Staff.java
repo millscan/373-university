@@ -1,46 +1,86 @@
 package org.university.people;
 
+import java.util.ArrayList;
+
 import org.university.hardware.Department;
 import org.university.software.*;
 
 public class Staff extends Employee {
 	
 	private Department department;
-	private float payRate;
+	private double payRate;
 	private int hoursWorked;
-	private float tuitionFee;
-	private Course courseTaken;
+	private int tuitionFee;
 	
-	public float getTuitionFee() {
-		if(courseTaken.getClass().toString() == "CampusCourse") {
-			return courseTaken.getCreditUnits()*300;
-		}
-		else {
-			return (courseTaken.getCreditUnits() == 3 ? 2000 : 3000 );
-		}
+	public Staff() {
+		this.schedule = new ArrayList<Course>(); 	
+		this.onlineCourseList = new ArrayList<OnlineCourse>();
+		this.campusCourseList = new ArrayList<CampusCourse>();
 	}
 	
-	public void raise(float raisePercent) {
-		payRate = (payRate * (1 + raisePercent));
+	public int getTuitionFee() {
+		
+		int campusFee = 0;
+		int onlineFee = 0;
+		for(CampusCourse c : this.campusCourseList) {
+			campusFee += c.getCreditUnits() * 300;
+		}
+		for(OnlineCourse o : this.onlineCourseList) {
+			onlineFee += o.getCreditUnits() == 3 ? 2000 : 3000;
+		}
+		
+		return campusFee + onlineFee;
+	}
+	
+	public void raise(double raisePercent) {
+		
+		payRate = (payRate * (1 + raisePercent/100.00));
+	}
+	
+	public double earns() {
+		
+		return payRate * hoursWorked;
+	}
+	
+	public void setPayRate(double newPayRate) {
+		this.payRate = newPayRate;
+	}
+	
+	public double getPayRate() {
+		return this.payRate;
+	}
+	
+	public void setMonthlyHours(int hours) {
+		this.hoursWorked = hours;
+	}
+	
+	public int getHoursWorked() {
+		return this.hoursWorked;
 	}
 	
 	public void addCampusCourse(CampusCourse cCourse) {
-		if(courseTaken != null) {
-			removeCourseWithWarning(cCourse);
-		}
-		courseTaken = cCourse;
+		replaceCourseWithWarning(cCourse);
+		campusCourseList.add(cCourse);
 	}
 	
 	public void addOnlineCourse(OnlineCourse oCourse) {
-		if(courseTaken != null) {
-			removeCourseWithWarning(oCourse);
-		}
-		courseTaken = oCourse;
+		replaceCourseWithWarning(oCourse);
+		onlineCourseList.add(oCourse);
 	}
 	
-	private void removeCourseWithWarning(Course newCourse) {
-		System.out.printf("%s%s is removed from %s's schedule(Staff can only take one class at a time). %s%s has been added to %s's Schedule", 
-				courseTaken.getDepartment().getDepartmentName(), courseTaken.getCourseNumber(), this.name, 
-				newCourse.getDepartment().getDepartmentName(), newCourse.getCourseNumber(), this.name);
+	private void replaceCourseWithWarning(Course newCourse) {
+		if(this.campusCourseList.size() > 0) {
+			System.out.printf("%s%s is removed from %s's schedule(Staff can only take one class at a time). %s%s has been added to %s's Schedule.%n", 
+					this.campusCourseList.get(0).getDepartment().getDepartmentName(), this.campusCourseList.get(0).getCourseNumber(), this.name, 
+					newCourse.getDepartment().getDepartmentName(), newCourse.getCourseNumber(), this.name);
+		}
+		if(this.onlineCourseList.size() > 0) {
+			System.out.printf("%s%s is removed from %s's schedule(Staff can only take one class at a time). %s%s has been added to %s's Schedule.%n", 
+					this.onlineCourseList.get(0).getDepartment().getDepartmentName(), this.onlineCourseList.get(0).getCourseNumber(), this.name, 
+					newCourse.getDepartment().getDepartmentName(), newCourse.getCourseNumber(), this.name);
+		}
+		
+		campusCourseList.clear();
+		onlineCourseList.clear();
 	}
 }

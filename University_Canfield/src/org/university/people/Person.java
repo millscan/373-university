@@ -13,9 +13,7 @@ public abstract class Person {
 	protected ArrayList<Course> schedule;
 	protected ArrayList<CampusCourse> campusCourseList;
 	protected ArrayList<OnlineCourse> onlineCourseList;
-	
-	
-	
+
 	public void setName(String n) {
 		this.name = n;
 	}
@@ -59,6 +57,10 @@ public abstract class Person {
 					}
 				}
 			}
+		}
+		
+		for(OnlineCourse o: onlineCourseList) {
+			System.out.printf("%s %s%n", o.getCourseNumber(), o.getName());
 		}
 	}
 	

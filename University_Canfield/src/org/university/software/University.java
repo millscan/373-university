@@ -21,6 +21,18 @@ public class University {
 		}
 	}
 	
+	public void printProfessorList() {
+		for(Department d: departmentList) {
+			d.printProfessorList();
+		}
+	}
+	
+	public void printStaffList() {
+		for(Department d: departmentList) {
+			d.printStaffList();
+		}
+	}
+	
 	public void printStudentList() {
 		for(Department d: departmentList) {
 			for(Student s: d.getStudentList()) {
@@ -31,9 +43,7 @@ public class University {
 	
 	public void printCourseList() {
 		for(Department d: departmentList) {
-			for(Course c : d.getCourseList()) {
-				System.out.println(c.getName());
-			}
+			d.printCourseList();
 		}
 	}
 }

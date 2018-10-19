@@ -11,6 +11,10 @@ public class CampusCourse extends Course {
 	private ArrayList<Integer> schedule;	
 	private int maxStudents;
 	
+	public CampusCourse() {
+		this.schedule = new ArrayList<Integer>();
+	}
+	
 	public void setRoomAssigned(Classroom newRoom) {
 		if(newRoom.addCourse(this)) {
 			classroom = newRoom;
@@ -31,10 +35,10 @@ public class CampusCourse extends Course {
 	}
 	
 	public boolean availableTo(Student s) {
-		if(this.roster.size() < maxStudents) {
-			return true;
+		if(this.roster.size() == maxStudents) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 	
 	
@@ -54,8 +58,8 @@ public class CampusCourse extends Course {
 		}
 	}
 	
-	public void setMaxCourseLimit(int l) {
-		this.maxStudents = l;
+	public void setMaxCourseLimit(int limit) {
+		this.maxStudents = limit;
 	}
 	
 	public int getMaxCourseLimit() {

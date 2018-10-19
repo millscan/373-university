@@ -1,5 +1,6 @@
 package org.university.hardware;
 
+import org.university.software.CampusCourse;
 import org.university.software.Course;
 
 import java.util.ArrayList;
@@ -9,10 +10,10 @@ public class Classroom {
 	String[] Slot = {"8:00am to 9:15am", "9:30am to 10:45am", "11:00am to 12:15pm", "12:30pm to 1:45pm", "2:00pm to 3:15pm", "3:30pm to 4:45pm"};
 	
 	private String roomNumber;
-	private ArrayList<Course> schedule;
+	private ArrayList<CampusCourse> schedule;
 	
 	public Classroom() {
-		schedule = new ArrayList<Course>();
+		schedule = new ArrayList<CampusCourse>();
 	}	
 	
 	public void setRoomNumber(String newNumber) {
@@ -23,7 +24,7 @@ public class Classroom {
 		return roomNumber;
 	}	
 	
-	public boolean addCourse(Course newCourse) {
+	public boolean addCourse(CampusCourse newCourse) {
 		
 		//First, do conflict detection
 		if(detectConflict(newCourse)) {
@@ -37,17 +38,17 @@ public class Classroom {
 		return true;
 	}
 	
-	public boolean removeCourse(Course oldCourse) {
+	public boolean removeCourse(CampusCourse oldCourse) {
 		//return true if course was in schedule, else return false
 		return schedule.remove(oldCourse);
 	}
 	
-	public ArrayList<Course> getSchedule(){
+	public ArrayList<CampusCourse> getSchedule(){
 		return schedule;
 	}
 	
-	public boolean detectConflict(Course newCourse) {
-		for(Course course : schedule) {
+	public boolean detectConflict(CampusCourse newCourse) {
+		for(CampusCourse course : schedule) {
 			for(int newSlot : newCourse.getSchedule()) {
 				if(course.getSchedule().contains(newSlot)) {
 					System.out.printf("%s%s conflicts with %s%s. Conflicting time slot %s %s. %s%s course cannot be added to %s's schedule.%n",
@@ -66,7 +67,7 @@ public class Classroom {
 		int slotIndex;
 		for(int i = 0; i < 5; i++) {
 			for(int j = 0; j < 6; j++) {
-				for(Course course : schedule) {
+				for(CampusCourse course : schedule) {
 					for(int slot : course.getSchedule()) {
 						dayIndex = slot / 100 - 1;
 						slotIndex = slot % 100 - 1;
