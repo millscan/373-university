@@ -1,26 +1,43 @@
 package org.university.hardware;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.university.people.*;
 import org.university.software.*;
 
 
-public class Department {
+public class Department implements Serializable {
 
 	private String name;
-	private ArrayList<CampusCourse> campusCourses;
-	private ArrayList<OnlineCourse> onlineCourses;
+	private ArrayList<Course> courses;
 	private ArrayList<Professor> professors;
 	private ArrayList<Staff> staffList;
 	private ArrayList<Student> students;
 	
 	public Department() {
-		this.campusCourses = new ArrayList<CampusCourse>();
-		this.onlineCourses = new ArrayList<OnlineCourse>();
+		this.courses = new ArrayList<Course>();
 		this.professors = new ArrayList<Professor>();
 		this.staffList = new ArrayList<Staff>();
 		this.students = new ArrayList<Student>();
+	}
+	
+	public Student getStudentFromName(String name) {
+		for(Student s : students) {
+			if(s.getName().trim().equals(name.trim())) {
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	public Course getCourseFromName(String name) {
+		for(Course c: courses) {
+			if (c.getCourseNumber() == Integer.parseInt(name)) {
+				return c;
+			}
+		}
+		return null;
 	}
 
 	public void setDepartmentName(String n) {
@@ -80,70 +97,76 @@ public class Department {
 		return professors;
 	}
 	
-	public void addCampusCourse(CampusCourse c) {
-		campusCourses.add(c);
+	public void addCourse(Course c) {
+		courses.add(c);
 		if(c.getDepartment() != this) {
 			c.setDepartment(this);
 		}
 	}
 	
 	
-	public void removeCampusCourse(CampusCourse c) {
-		campusCourses.remove(c);
+	
+	
+	public void removeCourse(Course c) {
+		courses.remove(c);
 		if(c.getDepartment() == this) {
 			c.setDepartment(null);
 		}
 	}
 	
 	
-	public ArrayList<CampusCourse> getCampusCourseList(){
-		return campusCourses;
-	}
-	
-	
-	public void addOnlineCourse(OnlineCourse c) {
-		onlineCourses.add(c);
-		if(c.getDepartment() != this) {
-			c.setDepartment(this);
-		}
+	public ArrayList<Course> getCourseList(){
+		return courses;
 	}
 
-	public ArrayList<OnlineCourse> getOnlineCourseList(){
-		return onlineCourses;
-	}
-	
-	public void removeOnlineCourse(OnlineCourse c) {
-		onlineCourses.remove(c);
-		if(c.getDepartment() == this) {
-			c.setDepartment(null);
+	public String getStudentListString(){
+		StringBuilder studentListString = new StringBuilder();
+		for(Student s: students) {
+			studentListString.append(s.getName()+"\n");
 		}
+		return studentListString.toString();
 	}
 
 	public void printStudentList() {
-		for(Student s: students) {
-			System.out.println(s.getName());
+		System.out.print(getStudentListString());
+	}
+	
+	public String getProfessorListString() {
+		StringBuilder professorListString = new StringBuilder();
+		for(Professor p: professors) {
+			professorListString.append(p.getName()+ "\n");
 		}
+		return professorListString.toString();
 	}
 	
 	public void printProfessorList() {
-		for(Professor p: professors) {
-			System.out.println(p.getName());
+		System.out.print(getProfessorListString());
+	}
+	
+	public String getStaffListString() {
+		StringBuilder staffListString = new StringBuilder();
+		for(Staff s: staffList) {
+			staffListString.append(s.getName() + "\n");
 		}
+		
+		return staffListString.toString();
 	}
 	
 	public void printStaffList() {
-		for(Staff s: staffList) {
-			System.out.println(s.getName());
+		System.out.print(getStaffListString());
+	}
+	
+	public String getCourseListString() {
+		StringBuilder courseListString = new StringBuilder();
+		for(Course c : courses) {
+			courseListString.append(String.format("%s%s%n", c.getDepartment().getDepartmentName(), c.getCourseNumber()));
 		}
+		return courseListString.toString();
 	}
 	
 	public void printCourseList() {
-		for(CampusCourse c : campusCourses) {
-			System.out.printf("%s%s %s%n", c.getDepartment().getDepartmentName(), c.getCourseNumber(), c.getName());
-		}
-		for(OnlineCourse c : onlineCourses) {
-			System.out.printf("%s%s %s%n", c.getDepartment().getDepartmentName(), c.getCourseNumber(), c.getName());
-		}
+		System.out.print(getCourseListString());
+		System.out.println();
 	}
 	
 }

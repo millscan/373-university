@@ -7,14 +7,11 @@ import java.util.ArrayList;
 
 public class Professor extends Employee {
 	
-		
 	private Department department;
 	private double salary;
 
 	public Professor() {
 		this.schedule = new ArrayList<Course>(); 	
-		this.onlineCourseList = new ArrayList<OnlineCourse>();
-		this.campusCourseList = new ArrayList<CampusCourse>();
 	}
 	
 	public void setName(String newName) {
@@ -41,31 +38,19 @@ public class Professor extends Employee {
 		return this.salary;
 	}
 	
-	public void addCampusCourse(CampusCourse newCourse) {
-		if(this.detectConflict(newCourse)) {
-			return;
+	public String addCourse(Course newCourse) {
+		if(this.detectConflict(newCourse) == null) {
+			return "DETECT CONFLICT";
 		}
 		
 		if(newCourse.getProfessor() != null) {
 			System.out.printf("The professor %s cannot be assigned to this course because professor %s is already assigned to the course %s.%n",
 					this.name, newCourse.getProfessor().getName(), newCourse.getName());
-			return;
+			return "ALREADY ASSIGNED";
 		}
-		
+		newCourse.setProfessor(this);
 		schedule.add(newCourse);
-		campusCourseList.add(newCourse);
-		newCourse.setProfessor(this);
-		return;
-	}
-	
-	public void addOnlineCourse(OnlineCourse newCourse) {
-		if(newCourse.getProfessor() != null) {
-			System.out.printf("The professor cannot be assigned to this online course because professor %s is already assigned to the course %s.%n",
-					newCourse.getProfessor().getName(), newCourse.getName());
-			return;
-		}
-		onlineCourseList.add(newCourse);
-		newCourse.setProfessor(this);
+		return null;
 	}
 	
 	public void raise(double r) {
@@ -76,15 +61,9 @@ public class Professor extends Employee {
 		return salary/26.00;
 	}
 	
-	public void removeCampusCourse(CampusCourse oldCourse) {
+	public void removeCourse(Course oldCourse) {
 		oldCourse.setProfessor(null);
 		schedule.remove(oldCourse);
-		campusCourseList.remove(oldCourse);
-	}
-	
-	public void removeOnlineCourse(OnlineCourse oldCourse) {
-		oldCourse.setProfessor(null);
-		onlineCourseList.remove(oldCourse);
 	}
 	
 	public ArrayList<Course> getSchedule(){

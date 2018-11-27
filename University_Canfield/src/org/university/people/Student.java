@@ -12,15 +12,11 @@ public class Student extends Person {
 
 	public Student() {
 		this.schedule = new ArrayList<Course>(); 	
-		this.onlineCourseList = new ArrayList<OnlineCourse>();
-		this.campusCourseList = new ArrayList<CampusCourse>();
 	}
 
 	private Department department;
 	private int unitsCompleted;
 	private int unitsRequired;
-	private int unitsEnrolled;
-	private int tuitionFee;
 
 	public void setDepartment(Department d) {
 		this.department = d;
@@ -33,42 +29,38 @@ public class Student extends Person {
 		return this.department;
 	}
 	
-	public void addCampusCourse(CampusCourse c) {
-		if(detectConflict(c)) {
-			return;
+	public String addCourse(Course c) {
+		if(detectConflict(c) != null) {
+			return String.format("%s%s course cannot be added to %s's schedule. %s%s conflicts with %s%s",
+					c.getDepartment().getDepartmentName(), c.getCourseNumber(), this.name, detectConflict(c).getDepartment().getDepartmentName(), detectConflict(c).getCourseNumber(),
+					c.getDepartment().getDepartmentName(), c.getCourseNumber());
 		}
 				
 		if(!c.availableTo(this)) {
-			System.out.printf("%s can't add Campus Course %s%s%s because this campus course has enough students.%n", 
+			System.out.printf("%s can't add course %s%s%s because this course has enough students.%n", 
 					this.name, c.getDepartment().getDepartmentName(), c.getCourseNumber(), c.getName());
-			return;
+			return String.format("%s can't add course %s%s%s because this course has enough students.%n", 
+					this.name, c.getDepartment().getDepartmentName(), c.getCourseNumber(), c.getName());
 		}
 		
 		this.schedule.add(c);
-		this.campusCourseList.add(c);
 		if(!c.getStudentRoster().contains(this)) {
 			c.addStudentToRoster(this);
 		}
+		return String.format("Student %s has been enrolled in %s%s", name, c.getDepartment().getDepartmentName(), c.getName());
 	}
 	
 	
-	public boolean dropCampusCourse(CampusCourse c) {
+	public boolean dropCourse(Course c) {
 		
-		if(!campusCourseList.contains(c)) {	
+		if(!schedule.contains(c)) {	
 			System.out.printf("The course %s%s could not be dropped because %s is not enrolled in %s%s.%n",
 					c.getDepartment().getDepartmentName(), c.getCourseNumber(),
 					this.name, c.getDepartment().getDepartmentName(), c.getCourseNumber());
 			return false;
 		}
 		
-		if(this.getCampusUnitsEnrolled() - c.getCreditUnits() < 6 && this.onlineCourseList.size() > 0) {
-			System.out.printf("%s can't drop this CampusCourse, because student doesn't has enough campus course credit to hold online course.%n", 
-					this.name);
-			return false;
-		}
-		
 		this.schedule.remove(c);
-		this.campusCourseList.remove(c);
 		if(c.getStudentRoster().contains(this)) {
 			c.removeStudent(this);
 		}
@@ -76,47 +68,11 @@ public class Student extends Person {
 		return true;
 	}
 	
-	public void addOnlineCourse(OnlineCourse oCourse) {
-		if(!oCourse.availableTo(this)) {
-			System.out.printf("%s can't add online Course %s%s %s. Because this student don't have enough Campus course credit.%n",
-					this.name, oCourse.getDepartment().getDepartmentName(), oCourse.getCourseNumber(), oCourse.getName());
-
-			return;
-		}
-		
-		this.onlineCourseList.add(oCourse);
-		if(!oCourse.getStudentRoster().contains(this)) {
-			oCourse.addStudentToRoster(this);
-		}
-	}
-	
-	public boolean dropOnlineCourse(OnlineCourse oCourse) {
-
-		this.onlineCourseList.remove(oCourse);
-		if(oCourse.getStudentRoster().contains(this)) {
-			oCourse.removeStudent(this);
-			return true;
-		}
-		else {
-			System.out.printf("The course %s%s could not be dropped because %s is not enrolled in %s%s.%n",
-					oCourse.getDepartment().getDepartmentName(), oCourse.getCourseNumber(),
-					this.name, oCourse.getDepartment().getDepartmentName(), oCourse.getCourseNumber());
-			return false;
-		}
-	}
-
 	
 	public ArrayList<Course> getCourses(){
 		return schedule;
 	}
-	
-	public ArrayList<CampusCourse> getCampusCourses(){
-		return campusCourseList;
-	}
-	
-	public ArrayList<OnlineCourse> getOnlineCourses(){
-		return onlineCourseList;
-	}
+
 	
 	public void setCompletedUnits(int newUnits) {
 		unitsCompleted = newUnits;
@@ -134,21 +90,10 @@ public class Student extends Person {
 		return unitsRequired;
 	}
 	
-	public int getCampusUnitsEnrolled() {
-		int temp = 0;
-		for(CampusCourse cc : this.campusCourseList) {
-			temp += cc.getCreditUnits();
-		}
-		return temp;
-	}
-	
 	public int getUnitsEnrolled() {
 		int temp = 0;
-		for(CampusCourse cc : this.campusCourseList) {
-			temp += cc.getCreditUnits();
-		}
-		for(OnlineCourse oc: this.onlineCourseList) {
-			temp+= oc.getCreditUnits();
+		for(Course c : this.schedule) {
+			temp += c.getCreditUnits();
 		}
 		
 		return temp;
@@ -156,15 +101,11 @@ public class Student extends Person {
 	
 	public int getTuitionFee() {
 		int campusFee = 0;
-		int onlineFee = 0;
-		for(CampusCourse c : this.campusCourseList) {
+		for(Course c : this.schedule) {
 			campusFee += c.getCreditUnits() * 300;
 		}
-		for(OnlineCourse o : this.onlineCourseList) {
-			onlineFee += o.getCreditUnits() == 3 ? 2000 : 3000;
-		}
 		
-		return campusFee + onlineFee;
+		return campusFee;
 	}
 	
 	public int requiredToGraduate() {
